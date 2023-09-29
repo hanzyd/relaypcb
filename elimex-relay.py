@@ -64,40 +64,33 @@ def switch_off_button(number):
     command = TOGGLE + "{}".format(number) + '}'
     send_command(command)
 
-def read_all_buttons_state():
-    command = READ
-    response = send_command(command)
-    return response
-
 if __name__ == '__main__':
 
     while True:
 
-        read_all_buttons_state()
+        send_command(READ)
         for num in range (1, 9):
             switch_on_button(num)
 
         switch_on_button(4)
 
-        read_all_buttons_state()
+        send_command(READ)
         for num in range(1, 9):
             toggle_button(num)
 
         switch_off_button(5)
 
-        read_all_buttons_state()
+        send_command(READ)
         for num in range(1, 9):
             toggle_button(num)
 
-        read_all_buttons_state()
+        send_command(READ)
         switch_off_all_buttons()
-        sleep(2)
 
-        read_all_buttons_state()
+        send_command(READ)
         for num in range (1, 9):
             switch_off_button(num)
 
-        sleep(2)
 pass
 
 
