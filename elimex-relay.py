@@ -5,14 +5,15 @@ from time import sleep
 HOST = "192.168.5.10"  # The server's hostname or IP address
 PORT = 80  # The port used by the server
 
-READ = 'POST /web_control.lua \r\nContent-Length: 32\r\n\r\n{"id":"driveRel","action":"get"}'
-TOGGLE = 'POST /web_control.lua \r\nContent-Length: 30\r\n\r\n{"id":"driveRel","button":'
+CMD_EP = 'POST /web_control.lua \r\n'
+READ = 'Content-Length: 32\r\n\r\n{"id":"driveRel","action":"get"}'
+TOGGLE = 'Content-Length: 30\r\n\r\n{"id":"driveRel","button":'
 
 def send_command(command: str, verbose=False):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect((HOST, PORT))
-            buffer = bytes(command, 'ascii')
+            buffer = bytes(CMD_EP + command, 'ascii')
             sock.sendall(buffer)
             data = sock.recv(8*1024)
             response = str(data, 'ascii')
