@@ -8,14 +8,26 @@ PORT = 80  # The port used by the server
 READ = 'POST /web_control.lua \r\nContent-Length: 32\r\n\r\n{"id":"driveRel","action":"get"}'
 TOGGLE = 'POST /web_control.lua \r\nContent-Length: 30\r\n\r\n{"id":"driveRel","button":'
 
-def send_command(command: str):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.connect((HOST, PORT))
-        buffer = bytes(command, 'ascii')
-        sock.sendall(buffer)
-        data = sock.recv(8*1024)
-        string = str(data, 'ascii')
-        return string
+def send_command(command: str, verbose=False):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.connect((HOST, PORT))
+            buffer = bytes(command, 'ascii')
+            sock.sendall(buffer)
+            data = sock.recv(8*1024)
+            response = str(data, 'ascii')
+
+            if verbose:
+                print(command)
+                print(response)
+
+            if len(response) != len('{"web":[],"status":"0x01","names":[]}'):
+               return (False, "")
+
+            return (True, response)
+    except OSError as err:
+        print("Socket error %s." %(err))
+        return (False, "")
 
 def toggle_button(number):
     command = TOGGLE + "{}".format(number) + '}'
@@ -31,7 +43,10 @@ def read_button_state(number):
     if number < 1 or number > 8:
         return False
 
-    response = read_all_buttons_state()
+    ok, response = send_command(READ)
+    if not ok:
+        return
+
     object =  json.loads(response)
     status = int(object['status'], 16)
     state = True if status & 1 << (number - 1) else False
