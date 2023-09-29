@@ -22,12 +22,10 @@ def toggle_button(number):
     send_command(command)
 
 def switch_on_all_button():
-    command = TOGGLE + "{}".format(9) + '}'
-    send_command(command)
+    toggle_button(9)
 
 def switch_off_all_buttons():
-    command = TOGGLE + "{}".format(10) + '}'
-    send_command(command)
+    toggle_button(10)
 
 def read_button_state(number):
     if number < 1 or number > 8:
