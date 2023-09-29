@@ -66,6 +66,8 @@ def switch_off_button(number):
 
 if __name__ == '__main__':
 
+    switch_off_all_buttons()
+
     while True:
 
         send_command(READ)
