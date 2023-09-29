@@ -26,7 +26,8 @@ def send_command(command: str, verbose=False):
 
             return (True, response)
     except OSError as err:
-        print("Socket error %s." %(err))
+        if verbose:
+            print("Socket error %s." %(err))
         return (False, "")
 
 def toggle_button(number):
@@ -41,26 +42,38 @@ def switch_off_all_buttons():
 
 def read_button_state(number):
     if number < 1 or number > 8:
-        return False
+        return False, False
 
     ok, response = send_command(READ)
     if not ok:
-        return
+        return False, False
 
     object =  json.loads(response)
     status = int(object['status'], 16)
     state = True if status & 1 << (number - 1) else False
-    return state
+    return True, state
 
 def switch_on_button(number):
-    if read_button_state(number):
+
+    if number < 1 or number > 8:
         return
+
+    ok, on = read_button_state(number)
+    if not ok or on:
+        return
+
     command = TOGGLE + "{}".format(number) + '}'
     send_command(command)
 
 def switch_off_button(number):
-    if not read_button_state(number):
+
+    if number < 1 or number > 8:
         return
+
+    ok, on = read_button_state(number)
+    if not ok or not on:
+        return
+
     command = TOGGLE + "{}".format(number) + '}'
     send_command(command)
 
