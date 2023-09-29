@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+"""This script could control https://elimex.bg/product/79420-modul-wi-fi-8-releta
+"""
+
 import socket
 import json
 from time import sleep
