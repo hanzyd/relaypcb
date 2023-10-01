@@ -68,7 +68,7 @@ def switch_on_button(host, number):
     if not ok or on:
         return
 
-    toggle_button(host, num)
+    toggle_button(host, number)
 
 def switch_off_button(host, number):
 
@@ -79,7 +79,7 @@ def switch_off_button(host, number):
     if not ok or not on:
         return
 
-    toggle_button(host, num)
+    toggle_button(host, number)
 
 def test_api(host):
 
