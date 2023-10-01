@@ -8,10 +8,15 @@ import json
 from time import sleep
 import argparse
 
+INITIAL_IP = '192.168.4.1'
 PORT = 80  # The port used by the server
 
 READ = '{"id":"driveRel","action":"get"}'
 TOGGLE = '{"id":"driveRel","button":'
+RESET = '{"id":"RESET"}'
+
+CONFIG = '{"autocon":"1","id":"setST",'
+SETTINGS = '"ssid":"{}","pswd":"{}","ip":"{}","sbm":"255.255.255.0","gw":"{}"'
 
 def send_command(host: str, command: str, verbose=False):
 
@@ -38,6 +43,14 @@ def send_command(host: str, command: str, verbose=False):
         if verbose:
             print("Socket error %s." %(err))
         return (False, "")
+
+
+def initial_setup(ssid, password, address, getaway):
+    settings = SETTINGS.format(ssid, password, address, getaway)
+    send_command(INITIAL_IP, CONFIG + settings + '}');
+    sleep(2)
+    send_command(INITIAL_IP, RESET)
+
 
 def toggle_button(host, number):
     command = TOGGLE + "{}".format(number) + '}'
@@ -124,7 +137,22 @@ if __name__ == '__main__':
                       choices=range(1, 9), help='Turn OFF relay <number>')
     args.add_argument('--test', dest='test', action='store_true',
                       help='Run tests')
+    args.add_argument('--setup', dest='setup', action='store_true',
+                      help='Perform initial setup')
+    args.add_argument('--ssid', dest='ssid', type=str,
+                      help='Access Point SSID')
+    args.add_argument('--password', dest='password', type=str,
+                      help='Access Point password')
+    args.add_argument('--getaway', dest='getaway', type=str,
+                      help='Network getaway IP address')
+
     args = args.parse_args()
+
+    if args.setup:
+        if not args.ssid or not args.password or not args.getaway:
+            print('Error missing argument')
+        else:
+            initial_setup(args.ssid, args.password, args.address, args.getaway)
 
     if args.test:
         test_api(args.address)
