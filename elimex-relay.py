@@ -88,7 +88,7 @@ def test_api(host):
 
     switch_off_all_buttons(host)
 
-    while True:
+    for _ in range(1, 20):
 
         send_command(host, READ)
         for num in range (1, 9):
@@ -122,7 +122,12 @@ if __name__ == '__main__':
                       choices=range(1, 9), help='Turn ON relay <number>')
     args.add_argument('--off', dest='off', action='append', type=int,
                       choices=range(1, 9), help='Turn OFF relay <number>')
+    args.add_argument('--test', dest='test', action='store_true',
+                      help='Run tests')
     args = args.parse_args()
+
+    if args.test:
+        test_api(args.address)
 
     if args.on:
         for num in args.on:
