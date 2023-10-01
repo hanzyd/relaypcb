@@ -121,11 +121,13 @@ if __name__ == '__main__':
                       choices=range(1, 9), help='Turn OFF relay <number>')
     args = args.parse_args()
 
-    for num in args.on:
-        switch_on_button(args.address, num)
+    if args.on:
+        for num in args.on:
+            switch_on_button(args.address, num)
 
-    for num in args.off:
-        switch_off_button(args.address, num)
+    if args.off:
+        for num in args.off:
+            switch_off_button(args.address, num)
 
 
 
