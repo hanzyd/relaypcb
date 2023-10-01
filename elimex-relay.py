@@ -10,15 +10,18 @@ import argparse
 
 PORT = 80  # The port used by the server
 
-CMD_EP = 'POST /web_control.lua \r\n'
-READ = 'Content-Length: 32\r\n\r\n{"id":"driveRel","action":"get"}'
-TOGGLE = 'Content-Length: 30\r\n\r\n{"id":"driveRel","button":'
+READ = '{"id":"driveRel","action":"get"}'
+TOGGLE = '{"id":"driveRel","button":'
 
 def send_command(host: str, command: str, verbose=False):
+
+    control_ep = 'POST /web_control.lua \r\n'
+    content_length = 'Content-Length: {}\r\n\r\n'.format(len(command))
+
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect((host, PORT))
-            buffer = bytes(CMD_EP + command, 'ascii')
+            buffer = bytes(control_ep + content_length + command, 'ascii')
             sock.sendall(buffer)
             data = sock.recv(8*1024)
             response = str(data, 'ascii')
