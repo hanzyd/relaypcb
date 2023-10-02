@@ -127,8 +127,8 @@ def test_api(host):
         for num in range (1, 9):
             switch_off_button(host, num)
 
-if __name__ == '__main__':
 
+def main():
     args = argparse.ArgumentParser()
     args.add_argument('--ip', dest='address', type=str, required=True,
                       help='IP address of RelayPCB')
@@ -165,6 +165,13 @@ if __name__ == '__main__':
     if args.off:
         for num in args.off:
             switch_off_button(args.address, num)
+
+if __name__ == '__main__':
+
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
 
 
 
