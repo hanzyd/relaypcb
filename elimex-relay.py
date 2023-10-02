@@ -11,11 +11,11 @@ import argparse
 INITIAL_IP = '192.168.4.1'
 PORT = 80  # The port used by the server
 
-READ = '{"id":"driveRel","action":"get"}'
-TOGGLE = '{"id":"driveRel","button":'
-RESET = '{"id":"RESET"}'
+READ = '"id":"driveRel","action":"get"'
+TOGGLE = '"id":"driveRel","button":"{}"'
+RESET = '"id":"RESET"'
 
-CONFIG = '{"autocon":"1","id":"setST",'
+CONFIG = '"autocon":"1","id":"setST",'
 SETTINGS = '"ssid":"{}","pswd":"{}","ip":"{}","sbm":"255.255.255.0","gw":"{}"'
 
 def send_command(host: str, command: str, verbose=False):
@@ -26,7 +26,8 @@ def send_command(host: str, command: str, verbose=False):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect((host, PORT))
-            buffer = bytes(control_ep + content_length + command, 'ascii')
+            request = control_ep + content_length +  '{' + command + '}'
+            buffer = bytes(request, 'ascii')
             sock.sendall(buffer)
             data = sock.recv(8*1024)
             response = str(data, 'ascii')
@@ -47,13 +48,13 @@ def send_command(host: str, command: str, verbose=False):
 
 def initial_setup(ssid, password, address, getaway):
     settings = SETTINGS.format(ssid, password, address, getaway)
-    send_command(INITIAL_IP, CONFIG + settings + '}');
+    send_command(INITIAL_IP, CONFIG + settings);
     sleep(2)
     send_command(INITIAL_IP, RESET)
 
 
 def toggle_button(host, number):
-    command = TOGGLE + "{}".format(number) + '}'
+    command = TOGGLE.format(number)
     send_command(host, command)
 
 def switch_on_all_button(host, ):
