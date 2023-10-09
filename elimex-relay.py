@@ -151,7 +151,7 @@ def main():
 
     if args.setup:
         if not args.ssid or not args.password or not args.getaway:
-            print('Error missing argument')
+            print('--setup requires --ip, --getaway, --ssid and --password')
         else:
             initial_setup(args.ssid, args.password, args.address, args.getaway)
 
