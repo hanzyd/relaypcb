@@ -133,6 +133,8 @@ def main():
     args = argparse.ArgumentParser()
     args.add_argument('--ip', dest='address', type=str, required=True,
                       help='IP address of RelayPCB')
+    args.add_argument('--reboot', dest='reboot', action='store_true',
+                      help='Reboot RelayPCB')
     args.add_argument('--on', dest='on', action='append', type=int,
                       choices=range(1, 9), help='Turn ON relay <number>')
     args.add_argument('--off', dest='off', action='append', type=int,
@@ -149,6 +151,10 @@ def main():
                       help='Network getaway IP address')
 
     args = args.parse_args()
+
+    if args.reboot:
+        send_command(args.address, RESET)
+        return
 
     if args.setup:
         if not args.ssid or not args.password or not args.getaway:
