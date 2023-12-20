@@ -25,6 +25,7 @@ def send_command(host: str, command: str, verbose=False):
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(3)
             sock.connect((host, PORT))
             request = control_ep + content_length +  '{' + command + '}'
             buffer = bytes(request, 'ascii')
